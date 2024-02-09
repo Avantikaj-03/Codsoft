@@ -1,0 +1,35 @@
+import secrets
+import string
+
+def generate_password(length=12, include_digits=True, include_special_chars=True):
+    # Define character sets
+    chars = string.ascii_letters
+    if include_digits:
+        chars += string.digits
+    if include_special_chars:
+        chars += string.punctuation
+    if not chars:
+        raise ValueError("At least one character set (letters, digits, or special characters) must be included.")
+    password = ''.join(secrets.choice(chars) for _ in range(length))
+    return password
+
+def main():
+    print("Password Generator")
+    
+    try:
+        length = int(input("Enter the desired length of the password: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+        return
+    
+    include_digits = input("Include digits in the password? (y/n): ").lower() == 'y'
+    include_special_chars = input("Include special characters in the password? (y/n): ").lower() == 'y'
+
+    try:
+        password = generate_password(length, include_digits, include_special_chars)
+        print(f"\nGenerated Password: {password}")
+    except ValueError as e:
+        print(e)
+
+if __name__ == "__main__":
+    main()
