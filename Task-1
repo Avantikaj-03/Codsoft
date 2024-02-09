@@ -1,0 +1,73 @@
+import json
+from datetime import datetime
+
+def load_todo_list():
+    try:
+        with open('todo_list.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_todo_list(todo_list):
+    with open('todo_list.json', 'w') as file:
+        json.dump(todo_list, file)
+
+def display_todo_list(todo_list):
+    if not todo_list:
+        print("No tasks in the to-do list.")
+    else:
+        print("To-Do List:")
+        for index, task in enumerate(todo_list, start=1):
+            print(f"{index}. {task['description']} - {task['date']}")
+
+def add_task(todo_list):
+    description = input("Enter task description: ")
+    date = input("Enter due date (YYYY-MM-DD): ")
+    
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        print("Invalid date format. Please use YYYY-MM-DD.")
+        return
+    
+    todo_list.append({'description': description, 'date': date})
+    print("Task added successfully.")
+
+def remove_task(todo_list):
+    display_todo_list(todo_list)
+    try:
+        index = int(input("Enter the task number to remove: ")) - 1
+        if 0 <= index < len(todo_list):
+            removed_task = todo_list.pop(index)
+            print(f"Task '{removed_task['description']}' removed successfully.")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid task number.")
+
+def main():
+    todo_list = load_todo_list()
+
+    while True:
+        print("\n1. Display To-Do List")
+        print("2. Add Task")
+        print("3. Remove Task")
+        print("4. Quit")
+
+        choice = input("Enter your choice (1-4): ")
+
+        if choice == '1':
+            display_todo_list(todo_list)
+        elif choice == '2':
+            add_task(todo_list)
+        elif choice == '3':
+            remove_task(todo_list)
+        elif choice == '4':
+            save_todo_list(todo_list)
+            print("To-Do List saved. Quitting...")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 4.")
+
+if _name_ == "_main_":
+    main()
